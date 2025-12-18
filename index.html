@@ -1,65 +1,79 @@
-<!DOCTYPE html>
+
+  <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tutor Profesional</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard – Tutor Profesional</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    body { font-family: sans-serif; padding: 20px; background: #f8f9fa; }
-    .container { max-width: 800px; margin: 0 auto; }
-    h1 { color: #2c3e50; }
-    .boton-compartir {
-      background: #0077B5;
-      color: white;
-      border: none;
-      padding: 12px 20px;
-      border-radius: 8px;
-      font-weight: bold;
-      margin: 20px auto;
-      cursor: pointer;
-      display: block;
-      width: 90%;
-      max-width: 300px;
-    }
-    .mensaje {
-      background: #f0f5ff;
-      border-left: 4px solid #0077B5;
-      padding: 16px;
-      margin: 20px;
-      border-radius: 6px;
-      display: none;
-    }
+    body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#eef5fb;color:#1f2937}
+    header{background:#0f172a;color:#fff;padding:20px}
+    header h1{margin:0;font-size:22px}
+    .container{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+    aside{background:#ffffff;padding:20px;border-right:1px solid #e5e7eb}
+    aside h3{margin-top:0}
+    aside ul{list-style:none;padding:0}
+    aside li{margin:12px 0;font-weight:600}
+    main{padding:24px}
+    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+    .card{background:#fff;padding:16px;border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,.08)}
+    .card h2{margin:0;font-size:16px;color:#2563eb}
+    .card p{font-size:28px;margin:10px 0 0;font-weight:bold}
+    .section{margin-top:32px}
+    canvas{background:#fff;border-radius:12px;padding:12px}
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>🎉 ¡Felicidades! Tu app está funcionando</h1>
-    <p>Estás listo para compartir tu progreso.</p>
+<header>
+  <h1>Dashboard – Tutor Profesional</h1>
+</header>
+<div class="container">
+  <aside>
+    <h3>Perfil</h3>
+    <p><strong>Profesional en Transición</strong><br>Investigación → Consultoría</p>
+    <h3>Competencias</h3>
+    <ul>
+      <li>Análisis de Datos</li>
+      <li>Storytelling</li>
+      <li>Pensamiento Estratégico</li>
+      <li>Herramientas Digitales</li>
+      <li>Gestión de Stakeholders</li>
+    </ul>
+  </aside>
+  <main>
+    <div class="cards">
+      <div class="card"><h2>Progreso General</h2><p>70%</p></div>
+      <div class="card"><h2>Módulos Completados</h2><p>3 / 5</p></div>
+      <div class="card"><h2>Tareas Finalizadas</h2><p>6</p></div>
+      <div class="card"><h2>Horas Invertidas</h2><p>9.5</p></div>
+    </div>
+    <div class="section">
+      <h2>Progreso por Competencia</h2>
+      <canvas id="competencias"></canvas>
+    </div>
+    <div class="section">
+      <h2>Avance del Plan</h2>
+      <canvas id="plan"></canvas>
+    </div>
+  </main>
+</div>
+<script>
+  new Chart(document.getElementById('competencias'),{
+    type:'radar',
+    data:{
+      labels:['Datos','Storytelling','Estrategia','Herramientas','Stakeholders'],
+      datasets:[{label:'Nivel',data:[70,65,75,60,55],fill:true}]
+    }
+  });
 
-    <!-- Botón de compartir progreso -->
-    <button class="boton-compartir" id="compartirBtn">
-      📲 Compartir mi progreso
-    </button>
-
-    <div class="mensaje" id="mensajeCompartir"></div>
-  </div>
-
-  <script>
-    document.getElementById('compartirBtn').addEventListener('click', function() {
-      const mensaje = `He comenzado mi transición de Investigación a Consultoría Digital con Tutor Profesional — ¡mi primer paso está dado! 🌱\n\n#CareerTransition #DigitalConsulting`;
-      
-      const contenedor = document.getElementById('mensajeCompartir');
-      contenedor.textContent = mensaje;
-      contenedor.style.display = 'block';
-
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(mensaje).then(() => {
-          alert('✅ ¡Texto copiado! Pégalo en LinkedIn, WhatsApp o notas.');
-        });
-      } else {
-        alert('ℹ️ Mantén presionado el texto abajo y copia manualmente.');
-      }
-    });
-  </script>
+  new Chart(document.getElementById('plan'),{
+    type:'bar',
+    data:{
+      labels:['Diagnóstico','Comunicación','Herramientas','Proyecto Real'],
+      datasets:[{label:'% completado',data:[100,70,40,10]}]
+    }
+  });
+</script>
 </body>
-  </html>
+</html>
