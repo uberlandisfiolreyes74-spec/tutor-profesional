@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Tutor Profesional</title>
+  <title>Tutor Profesional - Grok</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -34,6 +33,27 @@
       overflow-y: auto;
       padding: 10px;
       margin-bottom: 10px;
+      display: flex;
+      flex-direction: column;
+    }
+    #chat p {
+      margin: 8px 0;
+      padding: 10px 14px;
+      border-radius: 18px;
+      max-width: 80%;
+      line-height: 1.4;
+      word-wrap: break-word;
+    }
+    #chat p.user {
+      background: #2563eb;
+      color: white;
+      align-self: flex-end;
+      border-bottom-right-radius: 4px;
+    }
+    #chat p.grok {
+      background: #e5e7eb;
+      align-self: flex-start;
+      border-bottom-left-radius: 4px;
     }
     #entrada {
       width: 100%;
@@ -42,9 +62,9 @@
       border-radius: 8px;
       box-sizing: border-box;
       font-size: 16px;
+      margin-bottom: 10px;
     }
     #boton {
-      margin-top: 10px;
       padding: 10px 20px;
       background: #2563eb;
       color: white;
@@ -56,8 +76,10 @@
     #boton:hover {
       background: #1d4ed8;
     }
-    strong {
-      color: #1e40af;
+    .escribiendo {
+      font-style: italic;
+      color: #666;
+      align-self: flex-start;
     }
   </style>
 </head>
@@ -65,11 +87,11 @@
   <div id="principal">
     <div class="tarjeta">
       <h2>Tareas finalizadas</h2>
-      <p>0</p>
+      <p id="tareas">0</p>
     </div>
     <div class="tarjeta">
       <h2>Horas invertidas</h2>
-      <p>0.5 h</p>
+      <p id="horas">0.5 h</p>
     </div>
 
     <div class="seccion">
@@ -83,9 +105,9 @@
     </div>
 
     <div class="seccion">
-      <h2>Tutor IA</h2>
+      <h2>Tutor IA (Grok)</h2>
       <div id="chat">
-        <p><strong>Tutor:</strong> Hola, ¿qué te gustaría aprender hoy?</p>
+        <p class="grok"><strong>Grok:</strong> ¡Hola! Soy tu tutor profesional con Grok. ¿Qué te gustaría aprender hoy?</p>
       </div>
 
       <input type="text" id="entrada" placeholder="Escribe tu pregunta..." />
@@ -93,31 +115,87 @@
     </div>
   </div>
 
+  <!-- Puter.js para conectar con Grok -->
+  <script src="https://js.puter.com/v2/"></script>
+
   <script>
-    const chat = document.getElementById('chat');
+    const chatBox = document.getElementById('chat');
     const entrada = document.getElementById('entrada');
     const boton = document.getElementById('boton');
 
-    function enviarMensaje() {
+    let tareas = 0;
+    let horas = 0.5;
+
+    // Historial de conversación para mantener contexto
+    let conversation = [
+      {
+        role: "system",
+        content: "Eres un tutor profesional, amigable, claro y experto en cualquier tema. Responde siempre en español, paso a paso, y fomenta el aprendizaje."
+      }
+    ];
+
+    // Función para actualizar progreso (cada mensaje suma algo)
+    function actualizarProgreso() {
+      tareas++;
+      horas += 0.1;
+      document.getElementById('tareas').textContent = tareas;
+      document.getElementById('horas').textContent = horas.toFixed(1) + ' h';
+    }
+
+    async function enviarMensaje() {
       const texto = entrada.value.trim();
       if (!texto) return;
 
       // Mensaje del usuario
       const userMsg = document.createElement('p');
+      userMsg.classList.add('user');
       userMsg.innerHTML = `<strong>Tú:</strong> ${texto}`;
-      chat.appendChild(userMsg);
-
-      // Limpiar input
+      chatBox.appendChild(userMsg);
       entrada.value = '';
-      chat.scrollTop = chat.scrollHeight;
+      chatBox.scrollTop = chatBox.scrollHeight;
 
-      // Respuesta simulada del tutor (con retraso)
-      setTimeout(() => {
-        const tutorMsg = document.createElement('p');
-        tutorMsg.innerHTML = `<strong>Tutor:</strong> Buena pregunta. Vamos paso a paso... ¿Quieres que te explique con un ejemplo o prefieres un quiz?`;
-        chat.appendChild(tutorMsg);
-        chat.scrollTop = chat.scrollHeight;
-      }, 800);
+      // Agregar al historial
+      conversation.push({ role: "user", content: texto });
+
+      // Actualizar progreso
+      actualizarProgreso();
+
+      try {
+        // Indicador de "escribiendo..."
+        const escribiendo = document.createElement('p');
+        escribiendo.classList.add('grok', 'escribiendo');
+        escribiendo.innerHTML = `<strong>Grok:</strong> escribiendo...`;
+        chatBox.appendChild(escribiendo);
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        // Llamada a Grok con Puter.js
+        const response = await puter.ai.chat(conversation, {
+          model: "x-ai/grok-4.1-fast", // Versión rápida y buena para chat
+          temperature: 0.7,
+          max_tokens: 2000
+        });
+
+        // Quitar "escribiendo..."
+        chatBox.removeChild(escribiendo);
+
+        // Mostrar respuesta de Grok
+        const grokMsg = document.createElement('p');
+        grokMsg.classList.add('grok');
+        grokMsg.innerHTML = `<strong>Grok:</strong> ${response.message.content.replace(/\n/g, '<br>')}`;
+        chatBox.appendChild(grokMsg);
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        // Agregar al historial
+        conversation.push({ role: "assistant", content: response.message.content });
+
+      } catch (error) {
+        console.error(error);
+        const errorMsg = document.createElement('p');
+        errorMsg.classList.add('grok');
+        errorMsg.innerHTML = `<strong>Error:</strong> ${error.message || "No se pudo conectar con Grok. Intenta de nuevo."}`;
+        chatBox.appendChild(errorMsg);
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }
     }
 
     // Enviar con botón
