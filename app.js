@@ -66,4 +66,34 @@ document.addEventListener("click", (e) => {
       "Un tutor personal guía el aprendizaje de forma progresiva, clara y adaptada al estudiante."
     );
   }
-});
+});// ================================
+// Chat Tutor IA (simulado)
+// ================================
+function enviarMensaje() {
+  const input = document.getElementById("userInput");
+  const chatBox = document.getElementById("chatBox");
+  const texto = input.value.trim();
+
+  if (!texto) return;
+
+  // Mensaje usuario
+  const userMsg = document.createElement("p");
+  userMsg.innerHTML = "<strong>Tú:</strong> " + texto;
+  chatBox.appendChild(userMsg);
+
+  input.value = "";
+  chatBox.scrollTop = chatBox.scrollHeight;
+
+  // Suma XP al enviar
+  sumarXP(10);
+
+  // Respuesta simulada del tutor
+  setTimeout(() => {
+    const tutorMsg = document.createElement("p");
+    tutorMsg.innerHTML =
+      "<strong>Tutor:</strong> Buena pregunta. Vamos paso a paso. " +
+      "¿Quieres que te lo explique con un ejemplo o prefieres un quiz?";
+    chatBox.appendChild(tutorMsg);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }, 600);
+}
