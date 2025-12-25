@@ -56,7 +56,48 @@
       <h2>Avance del Plan</h2>
       <canvas id="plan"></canvas>
     </div>
-  
+ <div class="section">
+  <h2>Tutor IA</h2>
+
+  <div id="chatBox" style="
+    background:#fff;
+    border-radius:12px;
+    padding:12px;
+    height:220px;
+    overflow-y:auto;
+    margin-bottom:10px;
+    border:1px solid #e5e7eb;
+  ">
+    <p><strong>Tutor:</strong> Hola, ¿qué te gustaría aprender hoy?</p>
+  </div>
+
+  <input
+    id="userInput"
+    type="text"
+    placeholder="Escribe tu pregunta..."
+    style="
+      width:100%;
+      padding:10px;
+      border-radius:8px;
+      border:1px solid #cbd5f5;
+    "
+  />
+
+  <button
+    onclick="enviarMensaje()"
+    style="
+      margin-top:10px;
+      padding:10px 16px;
+      border-radius:8px;
+      background:#2563eb;
+      color:white;
+      border:none;
+      font-weight:bold;
+    "
+  >
+    Enviar
+  </button>
+    </div> 
 </main>
 </div>
 
