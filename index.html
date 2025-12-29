@@ -3,210 +3,133 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Tutor Profesional - Grok</title>
+  <title>Tutor Personal IA</title>
+
   <style>
     body {
-      font-family: Arial, sans-serif;
       margin: 0;
-      padding: 20px;
-      background: #f5f5f5;
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
     }
-    #principal {
-      max-width: 800px;
-      margin: 0 auto;
+
+    .container {
+      max-width: 420px;
+      margin: auto;
+      padding: 12px;
     }
-    .tarjeta {
-      background: white;
+
+    .card {
+      background: #ffffff;
       border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      padding: 14px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
     }
-    .seccion {
-      margin: 20px 0;
+
+    h2, h3 {
+      margin-top: 0;
     }
-    #chat {
-      background: #fff;
-      border: 1px solid #ddd;
+
+    .progress {
+      font-size: 24px;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    #chatBox {
+      height: 220px;
+      border: 1px solid #ccc;
       border-radius: 8px;
-      height: 300px;
+      padding: 8px;
       overflow-y: auto;
-      padding: 10px;
-      margin-bottom: 10px;
-      display: flex;
-      flex-direction: column;
+      background: #fafafa;
+      margin-bottom: 8px;
+      font-size: 14px;
     }
-    #chat p {
-      margin: 8px 0;
-      padding: 10px 14px;
-      border-radius: 18px;
-      max-width: 80%;
-      line-height: 1.4;
-      word-wrap: break-word;
+
+    #chatBox p {
+      margin: 6px 0;
     }
-    #chat p.user {
-      background: #2563eb;
-      color: white;
-      align-self: flex-end;
-      border-bottom-right-radius: 4px;
-    }
-    #chat p.grok {
-      background: #e5e7eb;
-      align-self: flex-start;
-      border-bottom-left-radius: 4px;
-    }
-    #entrada {
+
+    #userInput {
       width: 100%;
       padding: 10px;
-      border: 1px solid #cbd5e1;
-      border-radius: 8px;
-      box-sizing: border-box;
       font-size: 16px;
-      margin-bottom: 10px;
+      box-sizing: border-box;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-bottom: 8px;
     }
-    #boton {
-      padding: 10px 20px;
-      background: #2563eb;
-      color: white;
+
+    button {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      font-weight: bold;
       border: none;
       border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer;
+      background: #2563eb;
+      color: white;
     }
-    #boton:hover {
+
+    button:active {
       background: #1d4ed8;
-    }
-    .escribiendo {
-      font-style: italic;
-      color: #666;
-      align-self: flex-start;
     }
   </style>
 </head>
+
 <body>
-  <div id="principal">
-    <div class="tarjeta">
-      <h2>Tareas finalizadas</h2>
-      <p id="tareas">0</p>
-    </div>
-    <div class="tarjeta">
-      <h2>Horas invertidas</h2>
-      <p id="horas">0.5 h</p>
+
+  <div class="container">
+
+    <!-- PROGRESO -->
+    <div class="card">
+      <h3>Progreso</h3>
+      <p class="progress">0%</p>
+      <p style="font-size:12px; color:#555;">
+        Avanza interactuando con el tutor
+      </p>
     </div>
 
-    <div class="seccion">
-      <h2>Progreso por competencia</h2>
-      <div id="competencias">Aquí irá un gráfico o lista</div>
-    </div>
+    <!-- CHAT -->
+    <div class="card">
+      <h3>Chat Tutor IA</h3>
 
-    <div class="seccion">
-      <h2>Avance del Plan</h2>
-      <div id="plan">Aquí irá el progreso</div>
-    </div>
-
-    <div class="seccion">
-      <h2>Tutor IA (Grok)</h2>
-      <div id="chat">
-        <p class="grok"><strong>Grok:</strong> ¡Hola! Soy tu tutor profesional con Grok. ¿Qué te gustaría aprender hoy?</p>
+      <div id="chatBox">
+        <p><strong>Tutor:</strong> Hola, soy tu tutor personal. ¿Qué deseas aprender hoy?</p>
       </div>
 
-      <input type="text" id="entrada" placeholder="Escribe tu pregunta..." />
-      <button id="boton">Enviar</button>
+      <input
+        id="userInput"
+        type="text"
+        placeholder="Escribe tu mensaje aquí..."
+      />
+
+      <button onclick="enviarMensaje()">
+        Enviar
+      </button>
     </div>
+
+    <!-- QUIZ -->
+    <div class="card">
+      <h3>Refuerzo</h3>
+      <button onclick="iniciarQuiz()">
+        Iniciar Quiz
+      </button>
+    </div>
+
   </div>
 
-  <!-- Puter.js para conectar con Grok -->
-  <script src="https://js.puter.com/v2/"></script>
-
+  <!-- ============================= -->
+  <!-- PEGA AQUÍ TU ARCHIVO JS -->
+  <!-- ============================= -->
   <script>
-    const chatBox = document.getElementById('chat');
-    const entrada = document.getElementById('entrada');
-    const boton = document.getElementById('boton');
-
-    let tareas = 0;
-    let horas = 0.5;
-
-    // Historial de conversación para mantener contexto
-    let conversation = [
-      {
-        role: "system",
-        content: "Eres un tutor profesional, amigable, claro y experto en cualquier tema. Responde siempre en español, paso a paso, y fomenta el aprendizaje."
-      }
-    ];
-
-    // Función para actualizar progreso (cada mensaje suma algo)
-    function actualizarProgreso() {
-      tareas++;
-      horas += 0.1;
-      document.getElementById('tareas').textContent = tareas;
-      document.getElementById('horas').textContent = horas.toFixed(1) + ' h';
-    }
-
-    async function enviarMensaje() {
-      const texto = entrada.value.trim();
-      if (!texto) return;
-
-      // Mensaje del usuario
-      const userMsg = document.createElement('p');
-      userMsg.classList.add('user');
-      userMsg.innerHTML = `<strong>Tú:</strong> ${texto}`;
-      chatBox.appendChild(userMsg);
-      entrada.value = '';
-      chatBox.scrollTop = chatBox.scrollHeight;
-
-      // Agregar al historial
-      conversation.push({ role: "user", content: texto });
-
-      // Actualizar progreso
-      actualizarProgreso();
-
-      try {
-        // Indicador de "escribiendo..."
-        const escribiendo = document.createElement('p');
-        escribiendo.classList.add('grok', 'escribiendo');
-        escribiendo.innerHTML = `<strong>Grok:</strong> escribiendo...`;
-        chatBox.appendChild(escribiendo);
-        chatBox.scrollTop = chatBox.scrollHeight;
-
-        // Llamada a Grok con Puter.js
-        const response = await puter.ai.chat(conversation, {
-          model: "x-ai/grok-4.1-fast", // Versión rápida y buena para chat
-          temperature: 0.7,
-          max_tokens: 2000
-        });
-
-        // Quitar "escribiendo..."
-        chatBox.removeChild(escribiendo);
-
-        // Mostrar respuesta de Grok
-        const grokMsg = document.createElement('p');
-        grokMsg.classList.add('grok');
-        grokMsg.innerHTML = `<strong>Grok:</strong> ${response.message.content.replace(/\n/g, '<br>')}`;
-        chatBox.appendChild(grokMsg);
-        chatBox.scrollTop = chatBox.scrollHeight;
-
-        // Agregar al historial
-        conversation.push({ role: "assistant", content: response.message.content });
-
-      } catch (error) {
-        console.error(error);
-        const errorMsg = document.createElement('p');
-        errorMsg.classList.add('grok');
-        errorMsg.innerHTML = `<strong>Error:</strong> ${error.message || "No se pudo conectar con Grok. Intenta de nuevo."}`;
-        chatBox.appendChild(errorMsg);
-        chatBox.scrollTop = chatBox.scrollHeight;
-      }
-    }
-
-    // Enviar con botón
-    boton.onclick = enviarMensaje;
-
-    // Enviar con Enter
-    entrada.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
-        enviarMensaje();
-      }
-    });
+    /* AQUÍ VA EXACTAMENTE
+       EL CÓDIGO JAVASCRIPT
+       QUE YA PEGASTE
+       (NO CAMBIES NADA) */
   </script>
+
 </body>
 </html>
+    
