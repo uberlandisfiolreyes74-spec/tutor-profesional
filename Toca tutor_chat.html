@@ -1,149 +1,142 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Tutor Personal IA</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #0f172a;
-      color: #e5e7eb;
-      margin: 0;
-      padding: 15px;
-    }
-    h1 {
-      text-align: center;
-    }
-    .progress {
-      background: #1e293b;
-      border-radius: 8px;
-      overflow: hidden;
-      margin-bottom: 15px;
-    }
-    .progress-bar {
-      height: 20px;
-      background: #22c55e;
-      width: 0%;
-      text-align: center;
-      font-size: 12px;
-      color: #000;
-    }
-    #chatBox {
-      background: #020617;
-      border-radius: 8px;
-      padding: 10px;
-      height: 260px;
-      overflow-y: auto;
-      margin-bottom: 10px;
-    }
-    p {
-      margin: 5px 0;
-    }
-    input {
-      width: 75%;
-      padding: 10px;
-      border-radius: 6px;
-      border: none;
-    }
-    button {
-      padding: 10px;
-      border: none;
-      border-radius: 6px;
-      background: #3b82f6;
-      color: #fff;
-    }
-    .actions {
-      margin-top: 10px;
-      display: flex;
-      gap: 10px;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tutor Profesional IA</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f3f4f6;
+  margin: 0;
+  padding: 15px;
+}
+
+.container {
+  max-width: 800px;
+  margin: auto;
+}
+
+.card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.progress {
+  font-size: 28px;
+  font-weight: bold;
+  text-align: center;
+}
+
+#chatBox {
+  height: 260px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 8px;
+  background: #fafafa;
+}
+
+.msg-user {
+  text-align: right;
+  margin: 8px 0;
+}
+
+.msg-tutor {
+  text-align: left;
+  margin: 8px 0;
+}
+
+input, button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  font-size: 16px;
+}
+
+button {
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+}
+</style>
 </head>
 
 <body>
+<div class="container">
 
-<h1>Tutor Personal IA</h1>
+  <div class="card">
+    <h2>Progreso del Plan</h2>
+    <div class="progress" id="progress">0%</div>
+  </div>
 
-<div class="progress">
-  <div id="progressBar" class="progress-bar">0%</div>
-</div>
+  <div class="card">
+    <h2>Chat Tutor IA</h2>
+    <div id="chatBox">
+      <div class="msg-tutor"><strong>Tutor:</strong> Hola, soy tu tutor personal. ¿Qué deseas aprender hoy?</div>
+    </div>
 
-<div id="chatBox">
-  <p><strong>Tutor:</strong> Hola. Soy tu tutor personal. ¿Qué deseas aprender hoy?</p>
-</div>
+    <input id="userInput" placeholder="Escribe tu mensaje aquí...">
+    <button onclick="enviarMensaje()">Enviar</button>
+    <button onclick="iniciarQuiz()">Iniciar Quiz</button>
+  </div>
 
-<input id="userInput" placeholder="Escribe tu mensaje aquí...">
-<button onclick="enviarMensaje()">Enviar</button>
-
-<div class="actions">
-  <button onclick="explicarTema()">Refuerzo</button>
-  <button onclick="iniciarQuiz()">Iniciar Quiz</button>
 </div>
 
 <script>
-  let xp = Number(localStorage.getItem("xp")) || 0;
+let xp = Number(localStorage.getItem("xp")) || 0;
 
-  function actualizarXP() {
-    let progreso = Math.min(100, xp);
-    const bar = document.getElementById("progressBar");
-    bar.style.width = progreso + "%";
-    bar.textContent = progreso + "%";
-  }
+function actualizarXP() {
+  const porcentaje = Math.min(100, xp);
+  document.getElementById("progress").textContent = porcentaje + "%";
+}
 
+actualizarXP();
+
+function enviarMensaje() {
+  const input = document.getElementById("userInput");
+  const chat = document.getElementById("chatBox");
+  const texto = input.value.trim();
+  if (!texto) return;
+
+  chat.innerHTML += `<div class="msg-user"><strong>Tú:</strong> ${texto}</div>`;
+  input.value = "";
+  xp += 10;
+  localStorage.setItem("xp", xp);
   actualizarXP();
 
-  function sumarXP(cantidad) {
-    xp += cantidad;
-    localStorage.setItem("xp", xp);
-    actualizarXP();
+  setTimeout(() => {
+    chat.innerHTML += `
+      <div class="msg-tutor">
+        <strong>Tutor:</strong>
+        Bien. Vamos paso a paso. ¿Quieres explicación o un ejemplo práctico?
+      </div>`;
+    chat.scrollTop = chat.scrollHeight;
+  }, 500);
+}
+
+function iniciarQuiz() {
+  const r = prompt("Quiz rápido:\n¿Qué hace un buen tutor?\nA) Evalúa\nB) Enseña\nC) Castiga");
+
+  if (!r) return;
+
+  if (r.toUpperCase() === "B") {
+    alert("Correcto.");
+    xp += 30;
+  } else {
+    alert("Incorrecto. Respuesta correcta: B");
+    xp += 10;
   }
 
-  function enviarMensaje() {
-    const input = document.getElementById("userInput");
-    const chatBox = document.getElementById("chatBox");
-    const texto = input.value.trim();
-    if (!texto) return;
-
-    chatBox.innerHTML += `<p><strong>Tú:</strong> ${texto}</p>`;
-    input.value = "";
-    chatBox.scrollTop = chatBox.scrollHeight;
-    sumarXP(5);
-
-    setTimeout(() => {
-      const respuestas = [
-        "Buena pregunta. Empecemos por la base.",
-        "Te lo explico paso a paso.",
-        "Eso es clave. Presta atención a este concepto.",
-        "Vamos a simplificarlo."
-      ];
-      const r = respuestas[Math.floor(Math.random() * respuestas.length)];
-      chatBox.innerHTML += `<p><strong>Tutor:</strong> ${r}</p>`;
-      chatBox.scrollTop = chatBox.scrollHeight;
-    }, 500);
-  }
-
-  function explicarTema() {
-    const chatBox = document.getElementById("chatBox");
-    chatBox.innerHTML += `<p><strong>Tutor:</strong> Un tutor personal guía el aprendizaje de forma clara, progresiva y adaptada a tu ritmo.</p>`;
-    sumarXP(10);
-    chatBox.scrollTop = chatBox.scrollHeight;
-  }
-
-  function iniciarQuiz() {
-    const r = prompt(
-      "Quiz rápido:\n¿Cuál es la función principal de un tutor?\n\nA) Castigar\nB) Enseñar\nC) Vigilar"
-    );
-    if (!r) return;
-
-    if (r.toUpperCase() === "B") {
-      alert("Correcto.");
-      sumarXP(30);
-    } else {
-      alert("Incorrecto. La respuesta correcta es B.");
-      sumarXP(10);
-    }
-  }
+  localStorage.setItem("xp", xp);
+  actualizarXP();
+}
 </script>
 
 </body>
