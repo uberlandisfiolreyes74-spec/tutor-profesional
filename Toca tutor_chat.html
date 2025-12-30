@@ -1,135 +1,150 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
   <title>Tutor Personal IA</title>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
-      margin: 0;
       font-family: Arial, sans-serif;
-      background: #f2f2f2;
+      background: #0f172a;
+      color: #e5e7eb;
+      margin: 0;
+      padding: 15px;
     }
-
-    .container {
-      max-width: 420px;
-      margin: auto;
-      padding: 12px;
-    }
-
-    .card {
-      background: #ffffff;
-      border-radius: 12px;
-      padding: 14px;
-      margin-bottom: 12px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-    }
-
-    h2, h3 {
-      margin-top: 0;
-    }
-
-    .progress {
-      font-size: 24px;
-      font-weight: bold;
+    h1 {
       text-align: center;
     }
-
+    .progress {
+      background: #1e293b;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 15px;
+    }
+    .progress-bar {
+      height: 20px;
+      background: #22c55e;
+      width: 0%;
+      text-align: center;
+      font-size: 12px;
+      color: #000;
+    }
     #chatBox {
-      height: 220px;
-      border: 1px solid #ccc;
+      background: #020617;
       border-radius: 8px;
-      padding: 8px;
-      overflow-y: auto;
-      background: #fafafa;
-      margin-bottom: 8px;
-      font-size: 14px;
-    }
-
-    #chatBox p {
-      margin: 6px 0;
-    }
-
-    #userInput {
-      width: 100%;
       padding: 10px;
-      font-size: 16px;
-      box-sizing: border-box;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      margin-bottom: 8px;
+      height: 260px;
+      overflow-y: auto;
+      margin-bottom: 10px;
     }
-
-    button {
-      width: 100%;
-      padding: 12px;
-      font-size: 16px;
-      font-weight: bold;
+    p {
+      margin: 5px 0;
+    }
+    input {
+      width: 75%;
+      padding: 10px;
+      border-radius: 6px;
       border: none;
-      border-radius: 8px;
-      background: #2563eb;
-      color: white;
     }
-
-    button:active {
-      background: #1d4ed8;
+    button {
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      background: #3b82f6;
+      color: #fff;
+    }
+    .actions {
+      margin-top: 10px;
+      display: flex;
+      gap: 10px;
     }
   </style>
 </head>
 
 <body>
 
-  <div class="container">
+<h1>Tutor Personal IA</h1>
 
-    <!-- PROGRESO -->
-    <div class="card">
-      <h3>Progreso</h3>
-      <p class="progress">0%</p>
-      <p style="font-size:12px; color:#555;">
-        Avanza interactuando con el tutor
-      </p>
-    </div>
+<div class="progress">
+  <div id="progressBar" class="progress-bar">0%</div>
+</div>
 
-    <!-- CHAT -->
-    <div class="card">
-      <h3>Chat Tutor IA</h3>
+<div id="chatBox">
+  <p><strong>Tutor:</strong> Hola. Soy tu tutor personal. ¿Qué deseas aprender hoy?</p>
+</div>
 
-      <div id="chatBox">
-        <p><strong>Tutor:</strong> Hola, soy tu tutor personal. ¿Qué deseas aprender hoy?</p>
-      </div>
+<input id="userInput" placeholder="Escribe tu mensaje aquí...">
+<button onclick="enviarMensaje()">Enviar</button>
 
-      <input
-        id="userInput"
-        type="text"
-        placeholder="Escribe tu mensaje aquí..."
-      />
+<div class="actions">
+  <button onclick="explicarTema()">Refuerzo</button>
+  <button onclick="iniciarQuiz()">Iniciar Quiz</button>
+</div>
 
-      <button onclick="enviarMensaje()">
-        Enviar
-      </button>
-    </div>
+<script>
+  let xp = Number(localStorage.getItem("xp")) || 0;
 
-    <!-- QUIZ -->
-    <div class="card">
-      <h3>Refuerzo</h3>
-      <button onclick="iniciarQuiz()">
-        Iniciar Quiz
-      </button>
-    </div>
+  function actualizarXP() {
+    let progreso = Math.min(100, xp);
+    const bar = document.getElementById("progressBar");
+    bar.style.width = progreso + "%";
+    bar.textContent = progreso + "%";
+  }
 
-  </div>
+  actualizarXP();
 
-  <!-- ============================= -->
-  <!-- PEGA AQUÍ TU ARCHIVO JS -->
-  <!-- ============================= -->
-  <script>
-    /* AQUÍ VA EXACTAMENTE
-       EL CÓDIGO JAVASCRIPT
-       QUE YA PEGASTE
-       (NO CAMBIES NADA) */
-  </script>
+  function sumarXP(cantidad) {
+    xp += cantidad;
+    localStorage.setItem("xp", xp);
+    actualizarXP();
+  }
+
+  function enviarMensaje() {
+    const input = document.getElementById("userInput");
+    const chatBox = document.getElementById("chatBox");
+    const texto = input.value.trim();
+    if (!texto) return;
+
+    chatBox.innerHTML += `<p><strong>Tú:</strong> ${texto}</p>`;
+    input.value = "";
+    chatBox.scrollTop = chatBox.scrollHeight;
+    sumarXP(5);
+
+    setTimeout(() => {
+      const respuestas = [
+        "Buena pregunta. Empecemos por la base.",
+        "Te lo explico paso a paso.",
+        "Eso es clave. Presta atención a este concepto.",
+        "Vamos a simplificarlo."
+      ];
+      const r = respuestas[Math.floor(Math.random() * respuestas.length)];
+      chatBox.innerHTML += `<p><strong>Tutor:</strong> ${r}</p>`;
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }, 500);
+  }
+
+  function explicarTema() {
+    const chatBox = document.getElementById("chatBox");
+    chatBox.innerHTML += `<p><strong>Tutor:</strong> Un tutor personal guía el aprendizaje de forma clara, progresiva y adaptada a tu ritmo.</p>`;
+    sumarXP(10);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+
+  function iniciarQuiz() {
+    const r = prompt(
+      "Quiz rápido:\n¿Cuál es la función principal de un tutor?\n\nA) Castigar\nB) Enseñar\nC) Vigilar"
+    );
+    if (!r) return;
+
+    if (r.toUpperCase() === "B") {
+      alert("Correcto.");
+      sumarXP(30);
+    } else {
+      alert("Incorrecto. La respuesta correcta es B.");
+      sumarXP(10);
+    }
+  }
+</script>
 
 </body>
 </html>
-    
