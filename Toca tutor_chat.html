@@ -79,7 +79,9 @@ button {
   <div class="card">
     <h2>Chat Tutor IA</h2>
     <div id="chatBox">
-      <div class="msg-tutor"><strong>Tutor:</strong> Hola, soy tu tutor personal. ¿Qué deseas aprender hoy?</div>
+      <div class="msg-tutor">
+        <strong>Tutor:</strong> Hola, soy tu tutor personal. ¿Qué deseas aprender hoy?
+      </div>
     </div>
 
     <input id="userInput" placeholder="Escribe tu mensaje aquí...">
@@ -90,47 +92,92 @@ button {
 </div>
 
 <script>
+/* ===========================
+   Estado y Progreso
+   =========================== */
+
 let xp = Number(localStorage.getItem("xp")) || 0;
 
 function actualizarXP() {
-  const porcentaje = Math.min(100, xp);
-  document.getElementById("progress").textContent = porcentaje + "%";
+  document.getElementById("progress").textContent =
+    Math.min(100, xp) + "%";
 }
 
 actualizarXP();
+
+/* ===========================
+   Motor del Tutor (escalable)
+   =========================== */
+
+async function obtenerRespuestaTutor(texto) {
+  texto = texto.toLowerCase();
+
+  if (texto.includes("datos")) {
+    return "Los datos permiten tomar decisiones informadas. Se recolectan, analizan y se convierten en información útil.";
+  }
+
+  if (texto.includes("estrategia")) {
+    return "La estrategia define cómo alcanzar objetivos considerando recursos, contexto y prioridades.";
+  }
+
+  if (texto.includes("power bi")) {
+    return "Power BI es una herramienta para convertir datos en visualizaciones claras y accionables.";
+  }
+
+  if (texto.includes("comunicación")) {
+    return "La comunicación efectiva transmite ideas con claridad, propósito y adaptación al interlocutor.";
+  }
+
+  return "Buen planteamiento. ¿Prefieres una explicación sencilla o un ejemplo práctico?";
+}
+
+/* ===========================
+   Chat
+   =========================== */
 
 function enviarMensaje() {
   const input = document.getElementById("userInput");
   const chat = document.getElementById("chatBox");
   const texto = input.value.trim();
+
   if (!texto) return;
 
-  chat.innerHTML += `<div class="msg-user"><strong>Tú:</strong> ${texto}</div>`;
+  chat.innerHTML += `
+    <div class="msg-user">
+      <strong>Tú:</strong> ${texto}
+    </div>`;
+
   input.value = "";
   xp += 10;
   localStorage.setItem("xp", xp);
   actualizarXP();
 
-  setTimeout(() => {
+  setTimeout(async () => {
+    const respuesta = await obtenerRespuestaTutor(texto);
     chat.innerHTML += `
       <div class="msg-tutor">
-        <strong>Tutor:</strong>
-        Bien. Vamos paso a paso. ¿Quieres explicación o un ejemplo práctico?
+        <strong>Tutor:</strong> ${respuesta}
       </div>`;
     chat.scrollTop = chat.scrollHeight;
   }, 500);
 }
 
+/* ===========================
+   Quiz
+   =========================== */
+
 function iniciarQuiz() {
-  const r = prompt("Quiz rápido:\n¿Qué hace un buen tutor?\nA) Evalúa\nB) Enseña\nC) Castiga");
+  const r = prompt(
+    "Quiz rápido:\n¿Cuál es la función principal de un tutor?\n\nA) Evaluar\nB) Enseñar\nC) Castigar"
+  );
 
   if (!r) return;
 
   if (r.toUpperCase() === "B") {
-    alert("Correcto.");
+    alert("Correcto. Enseñar es el objetivo principal.");
     xp += 30;
   } else {
-    alert("Incorrecto. Respuesta correcta: B");
+    alert("Incorrecto. La respuesta correcta es B.");
     xp += 10;
   }
 
